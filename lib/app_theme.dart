@@ -14,6 +14,7 @@
  * 
  */
 import 'package:flutter/material.dart';
+import 'package:lib_theme/themes.dart';
 
 /// 设计规范 https://idreamsky.feishu.cn/wiki/wikcnfMNP9YPqralTmDuWl8PSKc
 ///
@@ -71,3 +72,30 @@ final ThemeData appThemeData = ThemeData(
     caption: TextStyle(color: _iconGray, fontSize: 14),
   ),
 );
+
+class AppTheme extends InheritedWidget {
+  final AppThemeData theme;
+  final AppThemeData? darkTheme;
+
+  const AppTheme({
+    Key? key,
+    required this.theme,
+    this.darkTheme,
+    required Widget child,
+  }) : super(
+          key: key,
+          child: child,
+        );
+
+  static AppThemeData of(BuildContext context) {
+    final appTheme = context.dependOnInheritedWidgetOfExactType<AppTheme>()!;
+    return WidgetsBinding.instance.window.platformBrightness == Brightness.dark
+        ? appTheme.darkTheme ?? appTheme.theme
+        : appTheme.theme;
+  }
+
+  @override
+  bool updateShouldNotify(covariant AppTheme oldWidget) {
+    return oldWidget.theme != theme || oldWidget.darkTheme != darkTheme;
+  }
+}
